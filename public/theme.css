@@ -1,0 +1,30 @@
+html * {
+    font-family: 'Lato', sans-serif;
+    
+}
+
+.hljs-keyword {
+    color:cornflowerblue
+}
+
+.hljs-string {
+    color:green !important;
+}
+
+.hljs-title {
+    color:hsla(288, 100%, 50%, 1) !important;
+}
+
+.code-block {
+    background-color: black;
+    font-family: 'Roboto mono', monospace !important;
+    color:white;
+    font-size: large;
+    padding: 20px;
+    width: 400px;
+    border-radius: 3px;
+}
+
+.code-block>span {
+    font-family: 'Roboto mono', monospace !important;
+}
