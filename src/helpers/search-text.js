@@ -1,9 +1,9 @@
 import hljs from "highlight.js";
-
+import emojis from "./emojis";
 
 export const searchText = (str) => {
     // const bracketRegex = /(`"?<.*>"?`|<.*>|<.*|<)(?!<\/code>)/g
-    const openBracketRegex = /.<.*/g
+    const openBracketRegex = /.?<.*/g
     const bracketRegex = /`<.+>.*<\/.+>`/g
     const headingsRegex = /#+\s.+\n/g;
     const linksRegex = /\[.+\]\(.+\)/g
@@ -12,6 +12,8 @@ export const searchText = (str) => {
     const codeRegex = /`[^<>\n`]+`/g
     const imageRegex = /!\[.*\]\(.+\)/g
     const blockCodeRegex =  /```js\n(?:(?!```)[\s\S])+\n```/g///^```js\n(.*\n)+```\n$/gm
+    const emojiRegex = /:[\w]+:/g
+    const blockQuoteRegex = /(?<=\n)(?:> .+\n)+/g
 
     const hasOpenBracket = str.match(openBracketRegex)
     hasOpenBracket ? str = openBrackets(hasOpenBracket, str) : str = str
@@ -34,7 +36,7 @@ export const searchText = (str) => {
 
     const hasLinks = str.match(linksRegex)
     hasLinks ? str = links(hasLinks, str) : str = str
-
+    
     const hasBold = str.match(boldRegex)
     hasBold ? str = bold(hasBold, str) : str = str
 
@@ -43,11 +45,16 @@ export const searchText = (str) => {
 
     const hasCode = str.match(codeRegex)
     hasCode ? str = code(hasCode, str) : str = str
-
+    
     const hasImage = str.match(imageRegex)
     hasImage ? str = image(hasImage, str) : str = str
 
-
+    const hasEmoji = str.match(emojiRegex)
+    hasEmoji ? str = emoji(hasEmoji, str) : str = str
+    
+    const hasBlockQuote = str.match(blockQuoteRegex)
+    hasBlockQuote ? str = blockQuote(hasBlockQuote, str) : str = str
+    
 
     str = str.replace(/\n{3,}/g, '</br></br>')
     str = str.replace(/\n\n/g, '</br></br>')
@@ -86,12 +93,16 @@ export const searchText = (str) => {
 
 const openBrackets = (match, str) => {
     const quoteTest = /`<.*>`/g
-    console.log(match)
+    const blockCodeTest = /```js\n(?:(?!```)[\s\S])+\n```/g
+    const obMatch = /</g
+
     match.forEach((m) => {
         let qMatch = m.match(quoteTest)
-        console.log(qMatch)
-        if (!qMatch) {
-            str = str.replace(m, `&lt;`)
+        let bcMatch = m.match(blockCodeTest)
+
+        if (!qMatch && !bcMatch) {
+            let obTest = m.match(obMatch)
+            str = str.replace(obTest[0], `&lt;`)
             return
         }
     })
@@ -146,7 +157,7 @@ const links = (match, str) => {
         let dMatch = m.match(description)
         let hMatch = m.match(href)
 
-        str = str.replace(m, `<a href=${hMatch[0]}>${dMatch}</a>`)
+        str = str.replace(m, `<a href=${hMatch[0]} target="_blank">${dMatch}</a>`)
     })
 
     return str
@@ -203,14 +214,48 @@ const image = (match, str) => {
 }
 
 const blockCode = (match, str) => {
-    const innerCode = /(?<=```js\n)(.+\s)+\n?(?=```)/gm
+    const innerCode = /(?<=```js\n)(.+\s*)+\n?(?=```)/gm
     
     match.forEach((m) => {
         let bcMatch = m.match(innerCode)
-        let hl = hljs.highlightAuto(`${bcMatch}`, ['html', 'javascript']).value
-        console.log(hl)
+        bcMatch[0] = bcMatch[0].replace(/&lt;/g, '<')
+        // console.log(bcMatch)
+        let hl = hljs.highlightAuto(`${bcMatch[0]}`, ['html', 'javascript']).value
+        // console.log(hl)
         //str = str.replace(m, `<blockquote style="gray;width:400px;"><pre><code class="language-js" id='block'>${bcMatch}</code></pre></blockquote>`)
         str = str.replace(m, `<blockquote><pre class="code-block">${hl}</pre></blockquote>`)
+    })
+
+    return str
+}
+
+const emoji = (match, str) => {
+    //const lazyMatch = /:.+:?/
+    
+    match.forEach((m) => {
+        // let firstMatch = m.match(lazyMatch)
+        // console.log(firstMatch)
+        let emojiMatch = emojis.find((el) => el.shortname === m)
+
+        if (!emojiMatch) {
+            return
+        }
+
+        str = str.replace(m, `<span>${emojiMatch.emoji}</span>`)
+    })
+
+    return str
+}
+
+const blockQuote = (match, str) => {
+    const bq = /(?<=>\s)(?:(?!>).+\n)+/g
+    // console.log(str)
+    console.log(match)
+
+    match.forEach((m) => {
+        let bqMatch = m.match(bq)
+        console.log(bqMatch)
+        str = str.replace(m, `<blockquote>${bqMatch}</blockquote>`)
     })
 
     return str

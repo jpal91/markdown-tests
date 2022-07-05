@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 // import fs from "fs";
 // import path from "path";
 import ReactHtmlParser from "react-html-parser";
-import hljs from "highlight.js";
 
 import { searchText } from "../helpers/search-text";
 
@@ -52,18 +51,17 @@ const Data = () => {
     const textId = document.querySelector('textarea')
 
     textId.addEventListener('keydown', (e) => {
-        console.log(e)
-        if (e.keyCode === 9) {
+        if (e.code === 'Tab') {
             e.preventDefault()
             textId.setRangeText(
-                ' ',
+                '   ',
                 textId.selectionStart,
                 textId.selectionStart,
                 'end'
             )
+            handleChange(e)
         }
     })
-
   }, []);
 
   useEffect(() => {
