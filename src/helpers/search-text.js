@@ -18,6 +18,7 @@ export const searchText = (str) => {
   const highRegex = /(==[^=]+==)/g;
   const strikeRegex = /~~[^~]+~~/g;
   const subRegex = /(?<!~)~[^~]+~(?!~)/g;
+  const uoRegex = /(\s*-\s.+\n)+/g;
 
   const hasOpenBracket = str.match(openBracketRegex);
   hasOpenBracket ? (str = openBrackets(hasOpenBracket, str)) : (str = str);
@@ -68,6 +69,9 @@ export const searchText = (str) => {
 
   const hasSubtext = str.match(subRegex);
   hasSubtext ? (str = subText(hasSubtext, str)) : (str = str);
+
+  const hasUOList = str.match(uoRegex);
+  hasUOList ? (str = uoList(hasUOList, str)) : (str = str);
 
   str = str.replace(/\n{3,}/g, "</br></br>");
   str = str.replace(/\n\n/g, "</br></br>");
@@ -154,21 +158,21 @@ const headings = (match, str) => {
       matched = m.match(h3);
       str = str.replace(
         m,
-        `<h3 ${idMatch ? `id=${idMatch[0]}` : null}>${matched[0]}</h3>`
+        `<h3 ${idMatch ? `id=${idMatch[0]}` : ""}>${matched[0]}</h3>`
       );
       return;
     } else if (m.match(h2)) {
       matched = m.match(h2);
       str = str.replace(
         m,
-        `<h2 ${idMatch ? `id=${idMatch[0]}` : null}>${matched[0]}</h2>`
+        `<h2 ${idMatch ? `id=${idMatch[0]}` : ""}>${matched[0]}</h2>`
       );
       return;
     } else if (m.match(h1)) {
       matched = m.match(h1);
       str = str.replace(
         m,
-        `<h1 ${idMatch ? `id=${idMatch[0]}` : null}>${matched[0]}</h1>`
+        `<h1 ${idMatch ? `id=${idMatch[0]}` : ""}>${matched[0]}</h1>`
       );
       return;
     }
@@ -344,4 +348,96 @@ const subText = (match, str) => {
   });
 
   return str;
+};
+
+const uoList = (match, str) => {
+  let count = 1;
+  const firstLevel = /(?<=\n-\s).*\n/;
+  const nextLevel = new RegExp(`/(?<=\n\s{${count}}-\s).*\n/`);
+  //console.log(match);
+  match.forEach((m) => {
+    console.log(m);
+    let listSection = m.split(/(\s*-\s.+\n)/).filter((el) => el.length > 0);
+
+    if (listSection.length <= 1) {
+      return;
+    }
+    //listSection[2] ? console.log(listSection[2].indexOf('-')) : null
+    const newString = listBuilder("", listSection, 0, 0); //listSection[0].indexOf('-') + 1
+    str = str.replace(m, newString);
+    //console.log(newString)
+    // let item = /(?<=-\s).+/
+    // let newString = '<ul>'
+    // listSection.reduce((prev, curr) => {
+    //     let prevI = prev ? prev.indexOf('-') : null
+    //     let currI = curr.indexOf('-')
+    //     let targetI = curr.match(item)
+    //     console.log(prevI, currI)
+    //     if (!prevI) {
+    //         return
+    //     }
+
+    //     if (currI === prevI) {
+    //         newString += `<li>${targetI[0]}</li>`
+    //     }
+
+    //     if (currI >= prevI) {
+    //         newString += `<ul><li>${targetI[0]}</li>`
+    //     }
+
+    //     if (currI <= prevI) {
+    //         newString += `</ul><li>${targetI[0]}</li>`
+    //     }
+    // })
+
+    // newString += '</ul>'
+
+    //     str = str.replace(m, newString)
+  });
+
+  return str;
+};
+
+const listBuilder = (string, list, index, dashIndex) => {
+  // console.log(index, dashIndex)
+  // console.log(list)
+
+  // if (!list[index] || list[index].indexOf('-') >= dashIndex) {
+  //     return
+  // }
+  // console.log(list)
+  //console.log(dashIndex)
+  if (index > list.length) {
+    //console.log('Here')
+    return;
+  }
+  //index === 2 ? console.log(list[index].indexOf('-')) : null
+
+  if (index > 0) {
+    if (list[index].indexOf("-") < dashIndex) {
+      // list[2] ? console.log(list[2].indexOf('-') <= dashIndex) : null
+      console.log("here", list[index].indexOf("-"), dashIndex);
+      return;
+    } else if (list[index].indexOf("-") > dashIndex) {
+      console.log("now here");
+      listBuilder(string, list, index, list[index].indexOf("-"));
+    }
+  }
+
+  dashIndex = list[index].indexOf("-");
+
+  string += "<ul>";
+
+  for (let l of list) {
+    let item = /(?<=-\s).+/;
+    let targetItem = l.match(item);
+    string += `<li>${targetItem[0]}</li>`;
+    listBuilder(string, list, index + 1, dashIndex);
+    //list.shift()
+    //console.log(list)
+  }
+
+  string += "</ul>";
+  console.log(string);
+  return string;
 };
