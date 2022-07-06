@@ -1,5 +1,6 @@
 import hljs from "highlight.js";
 import emojis from "./emojis";
+import { listBuilder } from "./funcs";
 
 export const searchText = (str) => {
   // const bracketRegex = /(`"?<.*>"?`|<.*>|<.*|<)(?!<\/code>)/g
@@ -18,7 +19,12 @@ export const searchText = (str) => {
   const highRegex = /(==[^=]+==)/g;
   const strikeRegex = /~~[^~]+~~/g;
   const subRegex = /(?<!~)~[^~]+~(?!~)/g;
-  const uoRegex = /(\s*-\s.+\n)+/g;
+//   const uoRegex = /(?<=\n)(\s*-\s.+\n)+/g;
+  const uoRegex = /(?<=\n)((?:>\s)?\s*-\s(?!\[|]).+\n)+/g;
+  const olRegex = /(?<=\n)((?:>\s)?\s*\d\.\s.+\n>?)+/g
+  const checkListRegex = /-\s\[(\s|x)\]\s.+\n/g
+  const footRegex = /\[\^.\]:?(.+)?/g
+  const superRegex = /\^.+\^/g
 
   const hasOpenBracket = str.match(openBracketRegex);
   hasOpenBracket ? (str = openBrackets(hasOpenBracket, str)) : (str = str);
@@ -72,6 +78,18 @@ export const searchText = (str) => {
 
   const hasUOList = str.match(uoRegex);
   hasUOList ? (str = uoList(hasUOList, str)) : (str = str);
+
+  const hasOList = str.match(olRegex)
+  hasOList ? str = oList(hasOList, str) : str = str
+
+  const hasCheckList = str.match(checkListRegex)
+  hasCheckList ? str = checkList(hasCheckList, str) : str = str
+
+  const hasFootNote = str.match(footRegex)
+  hasFootNote ? str = footNote(hasFootNote, str) : str = str
+
+  const hasSuperScript = str.match(superRegex)
+  hasSuperScript ? str = superScript(hasSuperScript, str) : str = str
 
   str = str.replace(/\n{3,}/g, "</br></br>");
   str = str.replace(/\n\n/g, "</br></br>");
@@ -294,10 +312,10 @@ const blockQuote = (match, str) => {
 
   match.forEach((m) => {
     let bqMatch = m.match(bq).join("");
-    console.log(`<blockquote>${bqMatch}</blockquote>`);
+    
     str = str.replace(
       m,
-      `<blockquote style="border-left:5px solid gray;padding-left:1.5em;margin:1.2em;">${bqMatch}</blockquote>`
+      `<blockquote style="border-left:5px solid gray;padding-left:1.5em;margin:1.2em;">\n${bqMatch}\n</blockquote>`
     );
     //console.log(str)
   });
@@ -351,93 +369,78 @@ const subText = (match, str) => {
 };
 
 const uoList = (match, str) => {
-  let count = 1;
-  const firstLevel = /(?<=\n-\s).*\n/;
-  const nextLevel = new RegExp(`/(?<=\n\s{${count}}-\s).*\n/`);
-  //console.log(match);
+    console.log(match)
   match.forEach((m) => {
-    console.log(m);
-    let listSection = m.split(/(\s*-\s.+\n)/).filter((el) => el.length > 0);
 
-    if (listSection.length <= 1) {
-      return;
-    }
-    //listSection[2] ? console.log(listSection[2].indexOf('-')) : null
-    const newString = listBuilder("", listSection, 0, 0); //listSection[0].indexOf('-') + 1
-    str = str.replace(m, newString);
-    //console.log(newString)
-    // let item = /(?<=-\s).+/
-    // let newString = '<ul>'
-    // listSection.reduce((prev, curr) => {
-    //     let prevI = prev ? prev.indexOf('-') : null
-    //     let currI = curr.indexOf('-')
-    //     let targetI = curr.match(item)
-    //     console.log(prevI, currI)
-    //     if (!prevI) {
-    //         return
-    //     }
+    //let listSection = m.split(/((?<=(\n))\s*-\s.+\n?)/).filter((el) => el.length > 0);
+    let listSection = m.split(/(\s*-\s.+\n?)/).filter((el) => el.length > 0);
 
-    //     if (currI === prevI) {
-    //         newString += `<li>${targetI[0]}</li>`
-    //     }
+    let result = listBuilder(listSection, false)
 
-    //     if (currI >= prevI) {
-    //         newString += `<ul><li>${targetI[0]}</li>`
-    //     }
-
-    //     if (currI <= prevI) {
-    //         newString += `</ul><li>${targetI[0]}</li>`
-    //     }
-    // })
-
-    // newString += '</ul>'
-
-    //     str = str.replace(m, newString)
+    str = str.replace(m, result.join(''));
   });
 
   return str;
 };
 
-const listBuilder = (string, list, index, dashIndex) => {
-  // console.log(index, dashIndex)
-  // console.log(list)
+const oList = (match, str) => {
+    match.forEach((m) => {
+        let test = m.split(/\n/)
+        //let listSection = m.split(/(?<=(\n|>\s))(\s*\d\.\s.+)(?=\n*)/).filter((el) => el.length > 0);
+        let listSection = m.split(/(\s*\d\.\s.+\n?)/).filter((el) => el.length > 0);
+        console.log(m, test)
+        let result = listBuilder(listSection, true)
 
-  // if (!list[index] || list[index].indexOf('-') >= dashIndex) {
-  //     return
-  // }
-  // console.log(list)
-  //console.log(dashIndex)
-  if (index > list.length) {
-    //console.log('Here')
-    return;
-  }
-  //index === 2 ? console.log(list[index].indexOf('-')) : null
+        str = str.replace(m, result.join(''))
+    })
 
-  if (index > 0) {
-    if (list[index].indexOf("-") < dashIndex) {
-      // list[2] ? console.log(list[2].indexOf('-') <= dashIndex) : null
-      console.log("here", list[index].indexOf("-"), dashIndex);
-      return;
-    } else if (list[index].indexOf("-") > dashIndex) {
-      console.log("now here");
-      listBuilder(string, list, index, list[index].indexOf("-"));
-    }
-  }
+    return str
+}
 
-  dashIndex = list[index].indexOf("-");
+const checkList = (match, str) => {
+    const checkbox = /(?<=\[)x(?=\])/
+    const label = /(?<=-\s\[.\]\s).+/
+    
+    match.forEach((m) => {
+        let checked = checkbox.test(m)
+        let labelText = m.match(label)
+        
+        str = str.replace(m, `<input type='checkbox' id=${labelText} name=${labelText} disabled ${checked ? `checked` : ``} style="margin: 0px 10px;"/><label for=${labelText}>${labelText}</label>\n`)
+    })
 
-  string += "<ul>";
+    return str
+}
 
-  for (let l of list) {
-    let item = /(?<=-\s).+/;
-    let targetItem = l.match(item);
-    string += `<li>${targetItem[0]}</li>`;
-    listBuilder(string, list, index + 1, dashIndex);
-    //list.shift()
-    //console.log(list)
-  }
+const footNote = (match, str) => {
+    const note = /(?<=\[\^).(?=\]:)/
+    const link = /(?<=\[\^).(?=\](?!:))/
+    const text = /(?<=\[\^.\]: ).+/
+    console.log(match)
+    match.forEach((m) => {
+        let noteMatch = m.match(note)
+        let linkMatch = m.match(link)
+        let textMatch = m.match(text)
+        
+        if (linkMatch) {
+            str = str.replace(m, `<sup><a id='note${linkMatch[0]}' href='#footnote-${linkMatch[0]}'>${linkMatch[0]}</a></sup>`)
+            return
+        } else if (textMatch) {
+            str = str.replace(m, '')
+            str += `<br><hr><br><p id='footnote-${noteMatch[0]}'>${noteMatch[0]}. ${textMatch[0]} <a href='#note${noteMatch[0]}'>&#128281;</a></p>`
+        }
+    })
 
-  string += "</ul>";
-  console.log(string);
-  return string;
-};
+    return str
+}
+
+const superScript = (match, str) => {
+    const innerText = /(?<=\^).+(?=\^)/
+    console.log(match)
+    match.forEach((m) => {
+        let textMatch = m.match(innerText)
+
+        str = str.replace(m, `<sup>${textMatch[0]}</sup>`)
+    })
+
+    return str
+}
