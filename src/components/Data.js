@@ -25,6 +25,11 @@ const transform = (node, index) => {
     //         <span id={index}>{node.data}</span>
     //     )
     // }
+    if (node.type ==='text' && (!node.parent || node.parent.name === 'br')) {
+        return (
+            <span>{`${node.data}`}</span>
+        )
+    }
 }
 
 const Data = () => {
@@ -41,8 +46,9 @@ const Data = () => {
     //   setData(data);
     // });
     const gettingData = async () => {
-        await fetch('./test.md')
+        await fetch('./test2.md')
         .then(res => res.text())
+        .then(res => res.replace(/(\\n)/g, '\n'))
         .then(res => setData(res))
         //.then(res => console.log(res))
     }
@@ -54,7 +60,7 @@ const Data = () => {
         if (e.code === 'Tab') {
             e.preventDefault()
             textId.setRangeText(
-                '   ',
+                '\t',
                 textId.selectionStart,
                 textId.selectionStart,
                 'end'
@@ -77,13 +83,11 @@ const Data = () => {
         rows="20"
         cols="100"
         value={data}
-        tabIndex='0'
         onChange={(event) => handleChange(event)}
-        
         id='my-textbox'
       />
       {/* <pre contentEditable='true' id="my-textbox" width="1000" wrap="true" onInput={(e) => {handleChange(e)}}>{data}</pre> */}
-      <div id="daddy">{ ReactHtmlParser(returnedData, { transform: transform } ) }</div>
+      <div>{ ReactHtmlParser(returnedData, { transform: transform } ) }</div>
     </React.Fragment>
   );
 };

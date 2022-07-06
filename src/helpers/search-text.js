@@ -3,100 +3,104 @@ import emojis from "./emojis";
 import { listBuilder } from "./funcs";
 
 export const searchText = (str) => {
-  // const bracketRegex = /(`"?<.*>"?`|<.*>|<.*|<)(?!<\/code>)/g
-  const openBracketRegex = /.?<.*/g;
-  const bracketRegex = /`<.+>.*<\/.+>`/g;
-  const headingsRegex = /#+\s.+\n/g;
-  const linksRegex = /\[.+\]\(.+\)/g;
-  const boldRegex = /(?<!(\*|\S))\*\*[^*\n]+\*\*(?!\*)/g;
-  const italicRegex = /(?<!(\*|\S))\*[^*\n]+\*(?!\*)/g;
-  const codeRegex = /`[^<>\n`]+`/g;
-  const imageRegex = /!\[.*\]\(.+\)/g;
-  const blockCodeRegex = /```js\n(?:(?!```)[\s\S])+\n```/g; ///^```js\n(.*\n)+```\n$/gm
-  const emojiRegex = /:[\w]+:/g;
-  const blockQuoteRegex = /(?<=\n)(?:> .+\n)+/g;
-  const lineBreakRegex = /\n---\n/g;
-  const highRegex = /(==[^=]+==)/g;
-  const strikeRegex = /~~[^~]+~~/g;
-  const subRegex = /(?<!~)~[^~]+~(?!~)/g;
-//   const uoRegex = /(?<=\n)(\s*-\s.+\n)+/g;
-  const uoRegex = /(?<=\n)((?:>\s)?\s*-\s(?!\[|]).+\n)+/g;
-  const olRegex = /(?<=\n)((?:>\s)?\s*\d\.\s.+\n>?)+/g
-  const checkListRegex = /-\s\[(\s|x)\]\s.+\n/g
-  const footRegex = /\[\^.\]:?(.+)?/g
-  const superRegex = /\^.+\^/g
+    // const bracketRegex = /(`"?<.*>"?`|<.*>|<.*|<)(?!<\/code>)/g
+    const openBracketRegex = /.?<.*/g;
+    const bracketRegex = /`<.+>.*<\/.+>`/g;
+    const headingsRegex = /#+\s.+\n/g;
+    const linksRegex = /\[.+\]\(.+\)/g;
+    const boldRegex = /(?<!(\*|\S))\*\*[^*\n]+\*\*(?!\*)/g;
+    const italicRegex = /(?<!(\*|\S))\*[^*\n]+\*(?!\*)/g;
+    //   const codeRegex = /`[^<>\n`]+`/g;
+    const codeRegex = /`.+`/g;
+    const imageRegex = /!\[.*\]\(.+\)/g;
+    //   const blockCodeRegex = /```js\n(?:(?!```)[\s\S])+\n```/g;
+    const blockCodeRegex = /```.*\n(?:(?!```)[\s\S])+\n```/g;
+    const emojiRegex = /:[\w]+:/g;
+    const blockQuoteRegex = /(?<=\n)(?:> .+\n)+/g;
+    const lineBreakRegex = /\n---\n/g;
+    const highRegex = /(==[^=]+==)/g;
+    const strikeRegex = /~~[^~]+~~/g;
+    const subRegex = /(?<!~)~[^~]+~(?!~)/g;
+    //   const uoRegex = /(?<=\n)(\s*-\s.+\n)+/g;
+    const uoRegex = /(?<=\n)((?:>\s)?\s*-\s(?!\[|]).+\n)+/g;
+    const olRegex = /(?<=\n)((?:>\s)?\s*\d\.\s.+\n>?)+/g;
+    const checkListRegex = /-\s\[(\s|x)\]\s.+\n/g;
+    const footRegex = /\[\^.\]:?(.+)?/g;
+    const superRegex = /\^.+\^/g;
 
-  const hasOpenBracket = str.match(openBracketRegex);
-  hasOpenBracket ? (str = openBrackets(hasOpenBracket, str)) : (str = str);
+    const hasOpenBracket = str.match(openBracketRegex);
+    hasOpenBracket ? (str = openBrackets(hasOpenBracket, str)) : (str = str);
 
-  const hasBlockCode = str.match(blockCodeRegex);
-  hasBlockCode ? (str = blockCode(hasBlockCode, str)) : (str = str);
-  // console.log(str)
-  const hasBracket = str.match(bracketRegex);
-  hasBracket ? (str = bracket(hasBracket, str)) : (str = str);
-  //console.log(str)
+    const hasBlockCode = str.match(blockCodeRegex);
+    hasBlockCode ? (str = blockCode(hasBlockCode, str)) : (str = str);
+    // console.log(str)
+    const hasBracket = str.match(bracketRegex);
+    hasBracket ? (str = bracket(hasBracket, str)) : (str = str);
+    //console.log(str)
 
-  // openBracketRegex.test(str) ? str = str.replace(/</g, `<span>&lt;</span>`) : str = str
-  // //console.log(openBracketRegex.test(str))
-  // console.log(str)
+    // openBracketRegex.test(str) ? str = str.replace(/</g, `<span>&lt;</span>`) : str = str
+    // //console.log(openBracketRegex.test(str))
+    // console.log(str)
 
-  const hasHeadings = str.match(headingsRegex);
-  hasHeadings ? (str = headings(hasHeadings, str)) : (str = str);
+    const hasHeadings = str.match(headingsRegex);
+    hasHeadings ? (str = headings(hasHeadings, str)) : (str = str);
 
-  const hasLinks = str.match(linksRegex);
-  hasLinks ? (str = links(hasLinks, str)) : (str = str);
+    const hasLinks = str.match(linksRegex);
+    hasLinks ? (str = links(hasLinks, str)) : (str = str);
 
-  const hasBold = str.match(boldRegex);
-  hasBold ? (str = bold(hasBold, str)) : (str = str);
+    const hasBold = str.match(boldRegex);
+    hasBold ? (str = bold(hasBold, str)) : (str = str);
 
-  const hasItalic = str.match(italicRegex);
-  hasItalic ? (str = italic(hasItalic, str)) : (str = str);
+    const hasItalic = str.match(italicRegex);
+    hasItalic ? (str = italic(hasItalic, str)) : (str = str);
 
-  const hasCode = str.match(codeRegex);
-  hasCode ? (str = code(hasCode, str)) : (str = str);
+    const hasCode = str.match(codeRegex);
+    hasCode ? (str = code(hasCode, str)) : (str = str);
 
-  const hasImage = str.match(imageRegex);
-  hasImage ? (str = image(hasImage, str)) : (str = str);
+    const hasImage = str.match(imageRegex);
+    hasImage ? (str = image(hasImage, str)) : (str = str);
 
-  const hasEmoji = str.match(emojiRegex);
-  hasEmoji ? (str = emoji(hasEmoji, str)) : (str = str);
+    const hasEmoji = str.match(emojiRegex);
+    hasEmoji ? (str = emoji(hasEmoji, str)) : (str = str);
 
-  const hasBlockQuote = str.match(blockQuoteRegex);
-  hasBlockQuote ? (str = blockQuote(hasBlockQuote, str)) : (str = str);
+    const hasBlockQuote = str.match(blockQuoteRegex);
+    hasBlockQuote ? (str = blockQuote(hasBlockQuote, str)) : (str = str);
 
-  const hasLineBreak = str.match(lineBreakRegex);
-  hasLineBreak ? (str = lineBreak(hasLineBreak, str)) : (str = str);
+    const hasLineBreak = str.match(lineBreakRegex);
+    hasLineBreak ? (str = lineBreak(hasLineBreak, str)) : (str = str);
 
-  const hasHighLight = str.match(highRegex);
-  hasHighLight ? (str = highLight(hasHighLight, str)) : (str = str);
+    const hasHighLight = str.match(highRegex);
+    hasHighLight ? (str = highLight(hasHighLight, str)) : (str = str);
 
-  const hasStrikeThru = str.match(strikeRegex);
-  hasStrikeThru ? (str = strikeThru(hasStrikeThru, str)) : (str = str);
+    const hasStrikeThru = str.match(strikeRegex);
+    hasStrikeThru ? (str = strikeThru(hasStrikeThru, str)) : (str = str);
 
-  const hasSubtext = str.match(subRegex);
-  hasSubtext ? (str = subText(hasSubtext, str)) : (str = str);
+    const hasSubtext = str.match(subRegex);
+    hasSubtext ? (str = subText(hasSubtext, str)) : (str = str);
 
-  const hasUOList = str.match(uoRegex);
-  hasUOList ? (str = uoList(hasUOList, str)) : (str = str);
+    const hasUOList = str.match(uoRegex);
+    hasUOList ? (str = uoList(hasUOList, str)) : (str = str);
 
-  const hasOList = str.match(olRegex)
-  hasOList ? str = oList(hasOList, str) : str = str
+    const hasOList = str.match(olRegex);
+    hasOList ? (str = oList(hasOList, str)) : (str = str);
 
-  const hasCheckList = str.match(checkListRegex)
-  hasCheckList ? str = checkList(hasCheckList, str) : str = str
+    const hasCheckList = str.match(checkListRegex);
+    hasCheckList ? (str = checkList(hasCheckList, str)) : (str = str);
 
-  const hasFootNote = str.match(footRegex)
-  hasFootNote ? str = footNote(hasFootNote, str) : str = str
+    const hasFootNote = str.match(footRegex);
+    hasFootNote ? (str = footNote(hasFootNote, str)) : (str = str);
 
-  const hasSuperScript = str.match(superRegex)
-  hasSuperScript ? str = superScript(hasSuperScript, str) : str = str
+    const hasSuperScript = str.match(superRegex);
+    hasSuperScript ? (str = superScript(hasSuperScript, str)) : (str = str);
+    // str = str.replace(/(\\n )*/, "</br>");
+    // str = str.replace(/\t/g, '&nbsp;&nbsp;&nbsp;')
+    console.log(str)
+    str = str.replace(/\n{3,}/g, "</br></br>");
+    str = str.replace(/\n\n/g, "</br></br>");
+    str = str.replace(/(\n|\\\n)/g, "</br>");
+    //   str = str.replace(/\n---\n/g, "<hr>");
 
-  str = str.replace(/\n{3,}/g, "</br></br>");
-  str = str.replace(/\n\n/g, "</br></br>");
-  str = str.replace(/(\n|\\\n)/g, "</br>");
-  //   str = str.replace(/\n---\n/g, "<hr>");
-
-  return str;
+    return str;
 };
 
 // const bracket = (match, str) => {
@@ -128,319 +132,356 @@ export const searchText = (str) => {
 // }
 
 const openBrackets = (match, str) => {
-  const quoteTest = /`<.*>`/g;
-  const blockCodeTest = /```js\n(?:(?!```)[\s\S])+\n```/g;
-  const obMatch = /</g;
+    const quoteTest = /`<.*>`/g;
+    const blockCodeTest = /```js\n(?:(?!```)[\s\S])+\n```/g;
+    const obMatch = /</g;
 
-  match.forEach((m) => {
-    let qMatch = m.match(quoteTest);
-    let bcMatch = m.match(blockCodeTest);
+    match.forEach((m) => {
+        let qMatch = m.match(quoteTest);
+        let bcMatch = m.match(blockCodeTest);
 
-    if (!qMatch && !bcMatch) {
-      let obTest = m.match(obMatch);
-      str = str.replace(obTest[0], `&lt;`);
-      return;
-    }
-  });
+        if (!qMatch && !bcMatch) {
+            let obTest = m.match(obMatch);
+            str = str.replace(obTest[0], `&lt;`);
+            return;
+        }
+    });
 
-  return str;
+    return str;
 };
 
 const bracket = (match, str) => {
-  const codeMatch = /(?<=`)<.+>.*<\/.+>(?=`)/g;
+    const codeMatch = /(?<=`)<.+>.*<\/.+>(?=`)/g;
 
-  match.forEach((m) => {
-    let cMatch = m.match(codeMatch);
-    console.log(cMatch);
-    let hl = hljs.highlightAuto(`${cMatch[0]}`, ["html"]).value;
-    str = str.replace(m, `<blockquote><pre>${hl}</pre></blockquote>`);
-  });
+    match.forEach((m) => {
+        let cMatch = m.match(codeMatch);
+        console.log(cMatch);
+        let hl = hljs.highlightAuto(`${cMatch[0]}`, ["html"]).value;
+        str = str.replace(m, `<blockquote><pre>${hl}</pre></blockquote>`);
+    });
 
-  return str;
+    return str;
 };
 
 const headings = (match, str) => {
-  //const h1 = /(?<=#\s).+\n?/g;
-  //   const h2 = /(?<=##\s).+\n?/g;
-  //   const h3 = /(?<=###\s).+\n?/g;
-  const h1 = /(?<=#\s)[^{}]+\n?/g;
-  const h2 = /(?<=##\s)[^{}]+\n?/g;
-  const h3 = /(?<=###\s)[^{}]+\n?/g;
-  const id = /(?<={).+(?=})\n?/;
+    const h1 = /(?<=#\s)[^{}]+\n?/g;
+    const h2 = /(?<=##\s)[^{}]+\n?/g;
+    const h3 = /(?<=###\s)[^{}]+\n?/g;
+    const h4 = /(?<=####\s)[^{}]+\n?/g;
+    const h5 = /(?<=#####\s)[^{}]+\n?/g;
+    const h6 = /(?<=######\s)[^{}]+\n?/g;
+    const headArray = [h1, h2, h3, h4, h5, h6]
+    const id = /(?<={).+(?=})\n?/;
 
-  match.forEach((m) => {
-    let matched;
-    const idMatch = m.match(id);
+    match.forEach((m) => {
+        const idMatch = m.match(id);
 
-    if (m.match(h3)) {
-      matched = m.match(h3);
-      str = str.replace(
-        m,
-        `<h3 ${idMatch ? `id=${idMatch[0]}` : ""}>${matched[0]}</h3>`
-      );
-      return;
-    } else if (m.match(h2)) {
-      matched = m.match(h2);
-      str = str.replace(
-        m,
-        `<h2 ${idMatch ? `id=${idMatch[0]}` : ""}>${matched[0]}</h2>`
-      );
-      return;
-    } else if (m.match(h1)) {
-      matched = m.match(h1);
-      str = str.replace(
-        m,
-        `<h1 ${idMatch ? `id=${idMatch[0]}` : ""}>${matched[0]}</h1>`
-      );
-      return;
-    }
-  });
+        // if (m.match(h3)) {
+        //     matched = m.match(h3);
+        //     str = str.replace(
+        //         m,
+        //         `<h3 ${idMatch ? `id=${idMatch[0]}` : ""}>${matched[0]}</h3>`
+        //     );
+        //     return;
+        // } else if (m.match(h2)) {
+        //     matched = m.match(h2);
+        //     str = str.replace(
+        //         m,
+        //         `<h2 ${idMatch ? `id=${idMatch[0]}` : ""}>${matched[0]}</h2>`
+        //     );
+        //     return;
+        // } else if (m.match(h1)) {
+        //     matched = m.match(h1);
+        //     str = str.replace(
+        //         m,
+        //         `<h1 ${idMatch ? `id=${idMatch[0]}` : ""}>${matched[0]}</h1>`
+        //     );
+        //     return;
+        // }
 
-  return str;
+        const index = m.match(h6)
+            ? 5
+            : m.match(h5)
+            ? 4
+            : m.match(h4)
+            ? 3
+            : m.match(h3)
+            ? 2
+            : m.match(h2)
+            ? 1
+            : m.match(h1)
+            ? 0
+            : 5;
+
+        str = str.replace(m, `<h${index + 1} ${idMatch ? `id=${idMatch[0]}` : ''}>${m.match(headArray[index])[0]}</h${index + 1}>`)
+    });
+
+    return str;
 };
 
 const links = (match, str) => {
-  const description = /(?<=\[).+(?=\])/g;
-  const href = /(?<=\().+(?=\))/g;
-  const external = /https?:/g;
+    const description = /(?<=\[).+(?=\])/g;
+    const href = /(?<=\().+(?=\))/g;
+    const external = /https?:/g;
 
-  match.forEach((m) => {
-    let dMatch = m.match(description);
-    let hMatch = m.match(href);
-    let externalTest = external.test(m);
+    match.forEach((m) => {
+        let dMatch = m.match(description);
+        let hMatch = m.match(href);
+        let externalTest = external.test(m);
 
-    str = str.replace(
-      m,
-      `<a href=${hMatch[0]} ${
-        externalTest ? `target = '_blank'` : ""
-      }>${dMatch}</a>`
-    );
-  });
+        str = str.replace(
+            m,
+            `<a href=${hMatch[0]} ${
+                externalTest ? `target = '_blank'` : ""
+            }>${dMatch}</a>`
+        );
+    });
 
-  return str;
+    return str;
 };
 
 const bold = (match, str) => {
-  const boldText = /(?<=\*\*)[^*]+(?=\*\*)/g;
+    const boldText = /(?<=\*\*)[^*]+(?=\*\*)/g;
 
-  match.forEach((m) => {
-    let bMatch = m.match(boldText);
+    match.forEach((m) => {
+        let bMatch = m.match(boldText);
 
-    str = str.replace(m, `<b>${bMatch[0]}</b>`);
-  });
+        str = str.replace(m, `<b>${bMatch[0]}</b>`);
+    });
 
-  return str;
+    return str;
 };
 
 const italic = (match, str) => {
-  const italicText = /(?<=\*)[^*]+(?=\*)/g;
+    const italicText = /(?<=\*)[^*]+(?=\*)/g;
 
-  match.forEach((m) => {
-    let iMatch = m.match(italicText);
+    match.forEach((m) => {
+        let iMatch = m.match(italicText);
 
-    str = str.replace(m, `<i>${iMatch[0]}</i>`);
-  });
+        str = str.replace(m, `<i>${iMatch[0]}</i>`);
+    });
 
-  return str;
+    return str;
 };
 
 const code = (match, str) => {
-  const codeRegex = /(?<=`)[^<>\n]+(?=`)/g;
+    //   const codeRegex = /(?<=`)[^<>\n]+(?=`)/g;
+    const codeRegex = /(?<=`).+(?=`)/g;
 
-  match.forEach((m) => {
-    let cMatch = m.match(codeRegex);
+    match.forEach((m) => {
+        let cMatch = m.match(codeRegex);
+        cMatch[0] = cMatch[0].replace(/&lt;/g, "<span><</span>");
+        // let hl = hljs.highlightAuto(`${cMatch[0]}`, ["html", "javascript"]).value
+        str = str.replace(m, `<code id="code_styled">${cMatch[0]}</code>`);
+    });
 
-    str = str.replace(m, `<code id="code_styled">${cMatch[0]}</code>`);
-  });
-
-  return str;
+    return str;
 };
 
 const image = (match, str) => {
-  const description = /(?<=!\[).*(?=\])/g;
-  const src = /(?<=\().+(?=\))/g;
+    const description = /(?<=!\[).*(?=\])/g;
+    const src = /(?<=\().+(?=\))/g;
 
-  match.forEach((m) => {
-    let dMatch = m.match(description);
-    let sMatch = m.match(src);
+    match.forEach((m) => {
+        let dMatch = m.match(description);
+        let sMatch = m.match(src);
 
-    str = str.replace(m, `<img src=${sMatch[0]} alt=${dMatch[0] || ""} />`);
-  });
+        str = str.replace(m, `<img src=${sMatch[0]} alt=${dMatch[0] || ""} />`);
+    });
 
-  return str;
+    return str;
 };
 
 const blockCode = (match, str) => {
-  const innerCode = /(?<=```js\n)(.+\s*)+\n?(?=```)/gm;
+    //   const innerCode = /(?<=```js\n)(.+\s*)+\n?(?=```)/gm;
+    const innerCode = /(?<=```.*\n\s?)(.+\s*)+\n?(?=```)/gm;
+    const codeType = /(?<=```).*(?=\n)/;
 
-  match.forEach((m) => {
-    let bcMatch = m.match(innerCode);
-    bcMatch[0] = bcMatch[0].replace(/&lt;/g, "<");
-    // console.log(bcMatch)
-    let hl = hljs.highlightAuto(`${bcMatch[0]}`, ["html", "javascript"]).value;
-    // console.log(hl)
-    //str = str.replace(m, `<blockquote style="gray;width:400px;"><pre><code class="language-js" id='block'>${bcMatch}</code></pre></blockquote>`)
-    str = str.replace(
-      m,
-      `<blockquote><pre class="code-block">${hl}</pre></blockquote>`
-    );
-  });
+    match.forEach((m) => {
+        let codeMatch = m.match(codeType) || "";
+        let bcMatch = m.match(innerCode);
+        bcMatch[0] = bcMatch[0].replace(/&lt;/g, "<");
+        // console.log(bcMatch)
+        let hl = hljs.highlightAuto(`${bcMatch[0]}`, [
+            `${codeMatch[0]}`,
+            "html",
+            "javascript",
+        ]).value;
+        // console.log(hl)
+        // console.log(hl)
+        //str = str.replace(m, `<blockquote style="gray;width:400px;"><pre><code class="language-js" id='block'>${bcMatch}</code></pre></blockquote>`)
+        str = str.replace(
+            m,
+            `<br><blockquote id='code-holder'><pre id='code-holder'><code class='code-block'>${hl}</code></pre></blockquote>`
+        );
+    });
 
-  return str;
+    return str;
 };
 
 const emoji = (match, str) => {
-  //const lazyMatch = /:.+:?/
+    //const lazyMatch = /:.+:?/
 
-  match.forEach((m) => {
-    // let firstMatch = m.match(lazyMatch)
-    // console.log(firstMatch)
-    let emojiMatch = emojis.find((el) => el.shortname === m);
+    match.forEach((m) => {
+        // let firstMatch = m.match(lazyMatch)
+        // console.log(firstMatch)
+        let emojiMatch = emojis.find((el) => el.shortname === m);
 
-    if (!emojiMatch) {
-      return;
-    }
+        if (!emojiMatch) {
+            return;
+        }
 
-    str = str.replace(m, `<span>${emojiMatch.emoji}</span>`);
-  });
+        str = str.replace(m, `<span>${emojiMatch.emoji}</span>`);
+    });
 
-  return str;
+    return str;
 };
 
 const blockQuote = (match, str) => {
-  const bq = /(?<=>\s)(?:(?!>).+\n)+/g;
+    const bq = /(?<=>\s)(?:(?!>).+\n)+/g;
 
-  match.forEach((m) => {
-    let bqMatch = m.match(bq).join("");
-    
-    str = str.replace(
-      m,
-      `<blockquote style="border-left:5px solid gray;padding-left:1.5em;margin:1.2em;">\n${bqMatch}\n</blockquote>`
-    );
-    //console.log(str)
-  });
+    match.forEach((m) => {
+        let bqMatch = m.match(bq).join("");
 
-  return str;
+        str = str.replace(
+            m,
+            `<blockquote style="border-left:5px solid gray;padding-left:1.5em;margin:1.2em;">\n${bqMatch}\n</blockquote>`
+        );
+        //console.log(str)
+    });
+
+    return str;
 };
 
 const lineBreak = (match, str) => {
-  match.forEach((m) => {
-    console.log(m);
-    str = str.replace(m, "</br><hr></br>");
-  });
+    match.forEach((m) => {
+        // console.log(m);
+        str = str.replace(m, "</br><hr></br>");
+    });
 
-  return str;
+    return str;
 };
 
 const highLight = (match, str) => {
-  const highL = /(?<===)[^=]+(?===)/;
+    const highL = /(?<===)[^=]+(?===)/;
 
-  match.forEach((m) => {
-    let highLMatch = m.match(highL);
-    console.log(highLMatch);
-    str = str.replace(m, `<mark>${highLMatch[0]}</mark>`);
-  });
+    match.forEach((m) => {
+        let highLMatch = m.match(highL);
+        // console.log(highLMatch);
+        str = str.replace(m, `<mark>${highLMatch[0]}</mark>`);
+    });
 
-  return str;
+    return str;
 };
 
 const strikeThru = (match, str) => {
-  const strike = /(?<=~~)[^~]+(?=~~)/;
+    const strike = /(?<=~~)[^~]+(?=~~)/;
 
-  match.forEach((m) => {
-    let strikeMatch = m.match(strike);
+    match.forEach((m) => {
+        let strikeMatch = m.match(strike);
 
-    str = str.replace(m, `<strike>${strikeMatch[0]}</strike>`);
-  });
+        str = str.replace(m, `<strike>${strikeMatch[0]}</strike>`);
+    });
 
-  return str;
+    return str;
 };
 
 const subText = (match, str) => {
-  const sub = /(?<=~)[^~]+(?=~)/;
+    const sub = /(?<=~)[^~]+(?=~)/;
 
-  match.forEach((m) => {
-    let subMatch = m.match(sub);
+    match.forEach((m) => {
+        let subMatch = m.match(sub);
 
-    str = str.replace(m, `<sub>${subMatch[0]}</sub>`);
-  });
+        str = str.replace(m, `<sub>${subMatch[0]}</sub>`);
+    });
 
-  return str;
+    return str;
 };
 
 const uoList = (match, str) => {
-    console.log(match)
-  match.forEach((m) => {
+    // console.log(match)
+    match.forEach((m) => {
+        //let listSection = m.split(/((?<=(\n))\s*-\s.+\n?)/).filter((el) => el.length > 0);
+        let listSection = m
+            .split(/(\s*-\s.+\n?)/)
+            .filter((el) => el.length > 0);
 
-    //let listSection = m.split(/((?<=(\n))\s*-\s.+\n?)/).filter((el) => el.length > 0);
-    let listSection = m.split(/(\s*-\s.+\n?)/).filter((el) => el.length > 0);
+        let result = listBuilder(listSection, false);
 
-    let result = listBuilder(listSection, false)
+        str = str.replace(m, result.join(""));
+    });
 
-    str = str.replace(m, result.join(''));
-  });
-
-  return str;
+    return str;
 };
 
 const oList = (match, str) => {
     match.forEach((m) => {
-        let test = m.split(/\n/)
+        let test = m.split(/\n/).filter((el) => el.length > 0);
         //let listSection = m.split(/(?<=(\n|>\s))(\s*\d\.\s.+)(?=\n*)/).filter((el) => el.length > 0);
-        let listSection = m.split(/(\s*\d\.\s.+\n?)/).filter((el) => el.length > 0);
-        console.log(m, test)
-        let result = listBuilder(listSection, true)
+        let listSection = m
+            .split(/(\s*\d\.\s.+\n?)/)
+            .filter((el) => el.length > 0);
+        // console.log(m, listSection, test)
+        let result = listBuilder(test, true);
 
-        str = str.replace(m, result.join(''))
-    })
+        str = str.replace(m, result.join(""));
+    });
 
-    return str
-}
+    return str;
+};
 
 const checkList = (match, str) => {
-    const checkbox = /(?<=\[)x(?=\])/
-    const label = /(?<=-\s\[.\]\s).+/
-    
-    match.forEach((m) => {
-        let checked = checkbox.test(m)
-        let labelText = m.match(label)
-        
-        str = str.replace(m, `<input type='checkbox' id=${labelText} name=${labelText} disabled ${checked ? `checked` : ``} style="margin: 0px 10px;"/><label for=${labelText}>${labelText}</label>\n`)
-    })
+    const checkbox = /(?<=\[)x(?=\])/;
+    const label = /(?<=-\s\[.\]\s).+/;
 
-    return str
-}
+    match.forEach((m) => {
+        let checked = checkbox.test(m);
+        let labelText = m.match(label);
+
+        str = str.replace(
+            m,
+            `<input type='checkbox' id=${labelText} name=${labelText} disabled ${
+                checked ? `checked` : ``
+            } style="margin: 0px 10px;"/><label for=${labelText}>${labelText}</label>\n`
+        );
+    });
+
+    return str;
+};
 
 const footNote = (match, str) => {
-    const note = /(?<=\[\^).(?=\]:)/
-    const link = /(?<=\[\^).(?=\](?!:))/
-    const text = /(?<=\[\^.\]: ).+/
-    console.log(match)
+    const note = /(?<=\[\^).(?=\]:)/;
+    const link = /(?<=\[\^).(?=\](?!:))/;
+    const text = /(?<=\[\^.\]: ).+/;
+    // console.log(match)
     match.forEach((m) => {
-        let noteMatch = m.match(note)
-        let linkMatch = m.match(link)
-        let textMatch = m.match(text)
-        
-        if (linkMatch) {
-            str = str.replace(m, `<sup><a id='note${linkMatch[0]}' href='#footnote-${linkMatch[0]}'>${linkMatch[0]}</a></sup>`)
-            return
-        } else if (textMatch) {
-            str = str.replace(m, '')
-            str += `<br><hr><br><p id='footnote-${noteMatch[0]}'>${noteMatch[0]}. ${textMatch[0]} <a href='#note${noteMatch[0]}'>&#128281;</a></p>`
-        }
-    })
+        let noteMatch = m.match(note);
+        let linkMatch = m.match(link);
+        let textMatch = m.match(text);
 
-    return str
-}
+        if (linkMatch) {
+            str = str.replace(
+                m,
+                `<sup><a id='note${linkMatch[0]}' href='#footnote-${linkMatch[0]}'>${linkMatch[0]}</a></sup>`
+            );
+            return;
+        } else if (textMatch) {
+            str = str.replace(m, "");
+            str += `<br><hr><br><p id='footnote-${noteMatch[0]}'>${noteMatch[0]}. ${textMatch[0]} <a href='#note${noteMatch[0]}'>&#128281;</a></p>`;
+        }
+    });
+
+    return str;
+};
 
 const superScript = (match, str) => {
-    const innerText = /(?<=\^).+(?=\^)/
-    console.log(match)
+    const innerText = /(?<=\^).+(?=\^)/;
+    // console.log(match)
     match.forEach((m) => {
-        let textMatch = m.match(innerText)
+        let textMatch = m.match(innerText);
 
-        str = str.replace(m, `<sup>${textMatch[0]}</sup>`)
-    })
+        str = str.replace(m, `<sup>${textMatch[0]}</sup>`);
+    });
 
-    return str
-}
+    return str;
+};

@@ -2,6 +2,13 @@
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+```js
+const thing = () => {
+    console.log('thing')
+    return
+}
+```
+
 ## Available Scripts
 
 In the project directory, you can run:

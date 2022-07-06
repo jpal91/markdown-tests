@@ -1,5 +1,10 @@
 html * {
   font-family: "Lato", sans-serif;
+
+}
+
+#root {
+	display:flex;
 }
 
 .hljs-keyword {
@@ -7,21 +12,39 @@ html * {
 }
 
 .hljs-string {
-  color: green !important;
+  color: hsla(120, 100%, 49%, 1) !important;
 }
 
 .hljs-title {
-  color: hsla(288, 100%, 50%, 1) !important;
+  color: hsla(197, 82%, 123%, 1) !important;
+}
+
+.hljs-tag {
+	color: royalblue !important;
+}
+
+.hljs-name {
+	color: royalblue !important;
+}
+
+.hljs-variable {
+	color: hsla(294, 71%, 66%, 1) !important;
 }
 
 .code-block {
-  background-color: black;
+  background-color: hsla(0, 0%, 9%, 1);
   font-family: "Roboto mono", monospace !important;
-  color: white;
+  color:white;
   font-size: large;
   padding: 20px;
-  width: 400px;
+  width: 100%;
+  max-width: 600px;
   border-radius: 3px;
+  word-wrap: normal;
+}
+
+#code-holder {
+	display:flex
 }
 
 .code-block > span {
